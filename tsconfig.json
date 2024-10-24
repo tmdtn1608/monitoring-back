@@ -1,11 +1,17 @@
 {
     "compilerOptions": {
         "preserveValueImports": false,
-        "module": "ESNext", // 또는 "ESModule", ES 모듈을 사용할 경우
+        "module": "ESNext",
         "esModuleInterop": true,
         "moduleResolution": "node",
-        "target": "ES6"
+        "target": "ES6",
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "outDir": "./dist"
     },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules"],
     "ts-node": {
         "esm": true
     }
