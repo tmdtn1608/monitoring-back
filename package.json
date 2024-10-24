@@ -1,0 +1,29 @@
+{
+  "name": "monitoring-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --loader ts-node/esm src/index.ts",
+    "dev": "nodemon --exec node --no-warnings=ExperimentalWarning --loader ts-node/esm  src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmdtn1608/monitoring-back.git"
+  },
+  "author": "xcient",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tmdtn1608/monitoring-back/issues"
+  },
+  "homepage": "https://github.com/tmdtn1608/monitoring-back#readme",
+  "devDependencies": {
+    "@types/node": "^22.7.9",
+    "nodemon": "^3.1.7",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.0",
+    "typescript": "^5.6.3"
+  },
+  "type": "module"
+}

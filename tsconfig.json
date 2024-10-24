@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "preserveValueImports": false,
+        "module": "ESNext", // 또는 "ESModule", ES 모듈을 사용할 경우
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "target": "ES6"
+    },
+    "ts-node": {
+        "esm": true
+    }
+  }
+  
