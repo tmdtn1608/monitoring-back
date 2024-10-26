@@ -2,11 +2,14 @@ import express, { Request, Response } from 'express';
 import { WebSocketServer, WebSocket } from 'ws';
 import http from 'http';
 import { v4 as uuidv4 } from 'uuid';
+import licenseRouter from './Routes/License.js';
+import deviceRouter from './Routes/Device.js';
+import processRouter from './Routes/process.js';
 
-const app = express();
+const router = express();
 const port : number = 3000;
 
-const server = http.createServer(app);
+const server = http.createServer(router);
 const wss = new WebSocketServer({ server, path: '/ws' });
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
@@ -22,11 +25,15 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
         console.log('Disconnect');
     });
 });
-
 // express 5 변경점 : https://news.hada.io/topic?id=17320
-app.get("/",(req:Request, res:Response):void => {
+router.get("/",(req:Request, res:Response):void => {
     res.send(`Create new uuid : ${uuidv4()}`);
 });
+
+router.use("/license", licenseRouter);
+router.use("/device", deviceRouter);
+router.use("/process", processRouter);
+
 
 // 서버 시작
 server.listen(port, () => {
