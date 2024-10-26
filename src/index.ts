@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { WebSocketServer, WebSocket } from 'ws';
 import http from 'http';
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 const port : number = 3000;
@@ -24,7 +25,7 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 
 // express 5 변경점 : https://news.hada.io/topic?id=17320
 app.get("/",(req:Request, res:Response):void => {
-    res.send('Hello, world!');
+    res.send(`Create new uuid : ${uuidv4()}`);
 });
 
 // 서버 시작
