@@ -15,6 +15,7 @@ const wss = new WebSocketServer({ server, path: '/ws' });
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     const origin = req.headers.origin as string | undefined;
     console.log(`Connection establish: ${origin}`);
+    // TODO : 기기 부팅 히스토리 추가
   
     ws.on('message', (message: string) => {
         console.log(`Received: ${message}`);
@@ -23,6 +24,7 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
   
     ws.on('close', () => {
         console.log('Disconnect');
+        // TODO : 기기 종료 히스토리 추가
     });
 });
 // express 5 변경점 : https://news.hada.io/topic?id=17320
