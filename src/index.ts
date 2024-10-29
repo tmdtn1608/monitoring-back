@@ -1,20 +1,26 @@
 import express, { Request, Response } from 'express';
 import { WebSocketServer, WebSocket } from 'ws';
 import http from 'http';
-import { v4 as uuidv4 } from 'uuid';
 import licenseRouter from './Routes/License.js';
 import deviceRouter from './Routes/Device.js';
 import processRouter from './Routes/process.js';
+import { DB_CLIENT } from './DBConnector';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const router = express();
 const port : number = 3000;
 
 const server = http.createServer(router);
 const wss = new WebSocketServer({ server, path: '/ws' });
-
-// TODO : DB 컨넥션 관리
+let clientCnt : number = 0;
+// TODO : DB 컨넥션 관리, 테스트할것.
+DB_CLIENT.GetInstance().Check().then(() => {
+    DB_CLIENT.GetInstance().Clear();
+});
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
+    clientCnt++;
     const origin = req.headers.origin as string | undefined;
     console.log(`Connection establish: ${origin}`);
     // TODO : 기기 부팅 히스토리 추가
@@ -27,11 +33,12 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     ws.on('close', () => {
         console.log('Disconnect');
         // TODO : 기기 종료 히스토리 추가
+        if(clientCnt > 0) clientCnt--;
     });
 });
 // express 5 변경점 : https://news.hada.io/topic?id=17320
 router.get("/",(req:Request, res:Response):void => {
-    res.send(`Create new uuid : ${uuidv4()}`);
+    res.send(`Hello, World! / current User : ${clientCnt}`);
 });
 
 router.use("/license", licenseRouter);
