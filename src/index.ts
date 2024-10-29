@@ -12,6 +12,8 @@ const port : number = 3000;
 const server = http.createServer(router);
 const wss = new WebSocketServer({ server, path: '/ws' });
 
+// TODO : DB 컨넥션 관리
+
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     const origin = req.headers.origin as string | undefined;
     console.log(`Connection establish: ${origin}`);
