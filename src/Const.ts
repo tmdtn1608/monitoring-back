@@ -11,10 +11,6 @@ const CONST = {
     DB_PASS : '',
     DB_NAME : '',
     DB_POOL : 0,
-    RD_HOST : '',
-    RD_PORT : 0,
-    RD_PASS : '',
-    RD_URL : '',
     JWT_KEY : '',
     JWT_ALG : '',
     JWT_EXP_A : '',
@@ -103,11 +99,6 @@ function ConstInit(option : any) {
         CONST.DB_PASS = process.env.DB_PASS as string;
         CONST.DB_NAME = process.env.DB_NAME as string;
         CONST.DB_POOL = Number(process.env.DB_POOL);
-
-        CONST.RD_HOST = process.env.RD_HOST as string;
-        CONST.RD_PORT = Number(process.env.RD_PORT);
-        CONST.RD_PASS = process.env.RD_PASS as string;
-        CONST.RD_URL = process.env.RD_URL as string;
 
         CONST.JWT_KEY = process.env.JWT_KEY as string;
         CONST.JWT_ALG = process.env.JWT_ALG as string;

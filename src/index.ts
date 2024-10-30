@@ -15,9 +15,9 @@ const server = http.createServer(router);
 const wss = new WebSocketServer({ server, path: '/ws' });
 let clientCnt : number = 0;
 // TODO : DB 컨넥션 관리, 테스트할것.
-DB_CLIENT.GetInstance().Check().then(() => {
-    DB_CLIENT.GetInstance().Clear();
-});
+// DB_CLIENT.GetInstance().Check().then(() => {
+//     DB_CLIENT.GetInstance().Clear();
+// });
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     clientCnt++;

@@ -1,5 +1,5 @@
 import { CONST } from "src/Const";
-import mysql, { Pool, PoolConnection, PoolOptions, RowDataPacket, FieldPacket } from "mysql2/promise";
+import mysql, { Pool, PoolConnection, RowDataPacket, FieldPacket } from "mysql2/promise";
 
 interface DbClient {
     Check: () => Promise<void>;

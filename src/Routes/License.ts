@@ -14,8 +14,8 @@ router.get('/',(req,res) => {
  * 라이센스 발급
  */
 router.post("/", (req, res) => {
-    res.send(`Create new uuid : ${uuidv4()}`);
-    res.send('license post');
+    let licenseNum : string = uuidv4();
+    res.send(`Create new uuid : ${licenseNum}`);
 });
 
 /**
