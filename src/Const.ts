@@ -89,7 +89,7 @@ const VALIDATION_DATA_FORMAT = [
 function ConstInit() {
     dotenv.config();
     CONST.API_PORT = Number(process.env.API_PORT);
-    CONST.HTTPS_PORT = process.env.HTTPS_PORT as string;
+    // CONST.HTTPS_PORT = process.env.HTTPS_PORT as string;
 
     CONST.DB_PORT = Number(process.env.DB_PORT);
     CONST.DB_HOST = process.env.DB_HOST as string;
@@ -98,21 +98,21 @@ function ConstInit() {
     CONST.DB_NAME = process.env.DB_NAME as string;
     CONST.DB_POOL = Number(process.env.DB_POOL);
 
-    CONST.JWT_KEY = process.env.JWT_KEY as string;
-    CONST.JWT_ALG = process.env.JWT_ALG as string;
-    CONST.JWT_EXP_A = process.env.JWT_EXP_A as string;
-    CONST.JWT_EXP_R = process.env.JWT_EXP_R as string;
-    CONST.JWT_PUB = process.env.JWT_PUB as string;
+    // CONST.JWT_KEY = process.env.JWT_KEY as string;
+    // CONST.JWT_ALG = process.env.JWT_ALG as string;
+    // CONST.JWT_EXP_A = process.env.JWT_EXP_A as string;
+    // CONST.JWT_EXP_R = process.env.JWT_EXP_R as string;
+    // CONST.JWT_PUB = process.env.JWT_PUB as string;
 
-    CONST.LOG_PATH = process.env.LOG_PATH as string;
-    CONST.LOG_LEV = process.env.LOG_LEV as string;
+    // CONST.LOG_PATH = process.env.LOG_PATH as string;
+    // CONST.LOG_LEV = process.env.LOG_LEV as string;
 
-    CONST.CRED_PATH = process.env.CRED_PATH as string;
-    CONST.CRED_PROFILE = process.env.CRED_PROFILE as string;
-    CONST.GENERAL_REGION = process.env.GENERAL_REGION as string;
+    // CONST.CRED_PATH = process.env.CRED_PATH as string;
+    // CONST.CRED_PROFILE = process.env.CRED_PROFILE as string;
+    // CONST.GENERAL_REGION = process.env.GENERAL_REGION as string;
 
-    CONST.SSL_KEY = process.env.SSL_KEY as string;
-    CONST.SSL_CERT = process.env.SSL_CERT as string;
+    // CONST.SSL_KEY = process.env.SSL_KEY as string;
+    // CONST.SSL_CERT = process.env.SSL_CERT as string;
 
     return true;
 }
