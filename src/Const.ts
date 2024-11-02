@@ -10,7 +10,7 @@ const CONST = {
     DB_HOST : 'localhost',
     DB_USER : 'root',
     DB_PASS : '',
-    DB_NAME : 'Mornitoring',
+    DB_NAME : 'Monitoring',
     DB_POOL : 0,
     JWT_KEY : '',
     JWT_ALG : '',
