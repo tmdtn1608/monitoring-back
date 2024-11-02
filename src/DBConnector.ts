@@ -1,4 +1,4 @@
-import { CONST } from "src/Const";
+import { CONST } from "./Const.js";
 import mysql, { Pool, PoolConnection, RowDataPacket, FieldPacket } from "mysql2/promise";
 
 interface DbClient {
@@ -86,16 +86,16 @@ const DB_CLIENT = (function () {
                 promisePool = connectionPool;
 
                 connectionPool.on('connection', function (connection: PoolConnection) {
-                    console.info(`MySQL Connection Complete ${connection.threadId}`);
+                    console.log(`MySQL Connection Complete ${connection.threadId}`);
                 });
                 connectionPool.on('enqueue', function () {
-                    console.info('Waiting for available connection...');
+                    console.log('Waiting for available connection...');
                 });
                 connectionPool.on('acquire', function (connection: PoolConnection) {
-                    console.info(`MySQL Connection ${connection.threadId} acquired`);
+                    console.log(`MySQL Connection ${connection.threadId} acquired`);
                 });
                 connectionPool.on('release', function (connection: PoolConnection) {
-                    console.info(`MySQL Connection ${connection.threadId} released`);
+                    console.log(`MySQL Connection ${connection.threadId} released`);
                 });
             }
 

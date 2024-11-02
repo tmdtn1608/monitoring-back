@@ -4,20 +4,36 @@ import http from 'http';
 import licenseRouter from './Routes/License.js';
 import deviceRouter from './Routes/Device.js';
 import processRouter from './Routes/process.js';
-import { DB_CLIENT } from './DBConnector';
+import { DB_CLIENT } from "./DBConnector.js"
+import { ConstInit } from './Const.js';
 import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 
-const router = express();
-const port : number = 3000;
+const app = express();
+app.use(express.json());
+const port : number = 5000;
 
-const server = http.createServer(router);
+app.use(
+    cors({
+      origin: 'http://localhost:3000', // 프론트엔드 URL을 origin으로 지정
+      methods: ['GET', 'POST', 'PUT', 'DELETE'], // 필요한 HTTP 메서드만 허용
+      credentials: true, // 쿠키를 포함한 요청을 허용
+    })
+);
+
+app.use((req: Request, res: Response, next) => {
+    res.setHeader("Content-Type", "application/json");
+    next();
+});
+
+const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
 let clientCnt : number = 0;
-// TODO : DB 컨넥션 관리, 테스트할것.
-// DB_CLIENT.GetInstance().Check().then(() => {
-//     DB_CLIENT.GetInstance().Clear();
-// });
+ConstInit();
+DB_CLIENT.GetInstance().Check().then(() => {
+    console.log("DB Connection OK");
+});
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     clientCnt++;
@@ -37,14 +53,22 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     });
 });
 // express 5 변경점 : https://news.hada.io/topic?id=17320
-router.get("/",(req:Request, res:Response):void => {
+app.get("/", async (req:Request, res:Response): Promise<void> => {
+    // DB_CLIENT.GetInstance().AsyncQuery("select * from License")
+    // .then((result) => {
+    //     const jsonResult = JSON.stringify(result);
+    //     res.json(result);
+    // })
+    // .catch((error) => {
+    //     console.error('Error fetching process list:', error);
+    //     res.status(500);
+    // });
     res.send(`Hello, World! / current User : ${clientCnt}`);
 });
 
-router.use("/license", licenseRouter);
-router.use("/device", deviceRouter);
-router.use("/process", processRouter);
-
+app.use("/license", licenseRouter);
+app.use("/device", deviceRouter);
+app.use("/process", processRouter);
 
 // 서버 시작
 server.listen(port, () => {

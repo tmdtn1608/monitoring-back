@@ -11,10 +11,7 @@
         "allowSyntheticDefaultImports": true,
         "outDir": "./dist",
         "rootDir": "./src",
-        "baseUrl": "./",
-        "paths": {
-        "@routes/*": ["src/routes/*"]
-        }
+        "baseUrl": "./"
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules"],
