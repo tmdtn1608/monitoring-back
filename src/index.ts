@@ -23,6 +23,7 @@ app.use(
 );
 
 app.use((req: Request, res: Response, next) => {
+    console.log(`Requested Method: ${req.method}, URL: ${req.originalUrl}`);
     res.setHeader("Content-Type", "application/json");
     next();
 });

@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { DB_CLIENT } from "../DBConnector.js"
-import { RowDataPacket } from 'mysql2';
 
 const router = Router();
 
@@ -42,6 +41,7 @@ router.post("/", (req, res) => {
  * 라이센스 삭제
  */
 router.delete("/", (req,res) => {
+    console.log("called license delete");
     let param = req.body;
     if (param.license === undefined || param.license === null) {
         res.status(400).send("No license");
