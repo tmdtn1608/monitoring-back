@@ -22,7 +22,6 @@ router.get('/',(req,res) => {
  * 등록된 기기 & 라이센스 삭제
  */
 router.delete("/", (req,res) => {
-    // TODO : 기기는 비활성화로 수정, 라이센스는 기기정보만 수정
     let param = req.body;
     if (param.mac === undefined || param.mac === null) {
         res.status(400).send("No device");

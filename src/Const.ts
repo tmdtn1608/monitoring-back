@@ -25,8 +25,25 @@ const CONST = {
     SSL_KEY : '',
     SSL_CERT : '',
 };
+
 /**
- * 로그인 결과
+ * 히스토리 타입
+ */
+const HistoryType = {
+    CLIENT_LOGIN : "Client login",
+    CLIENT_LOGOUT : "Client logout",
+    USER_LOGIN : "User login",
+    USER_LOGOUT : "User logout",
+    BLACK_ADDED : "Black process added",
+    BLACK_REMOVED : "Black process removed",
+    WHITE_ADDED : "White process added",
+    WHITE_REMOVED : "White process removed",
+    CMD_KILL_BLACK : "Execute kill process",
+    AUTO_KILL_BLACK : "Auto kill process"
+};
+
+/**
+ * 로그인 결과 - 미사용
  */
 const LOGIN_RESULT = {
     ALREADY_LOGIN : "Already logined",
@@ -36,14 +53,14 @@ const LOGIN_RESULT = {
 }
 
 /**
- * 에러코드
+ * 에러코드 - 미사용
  */
 const ERROR_DESC = {
 
 }
 
 /**
- * 토큰타입
+ * 토큰타입 - 미사용
  */
 const TokenType = {
     ACCESS: "Access",
@@ -51,7 +68,7 @@ const TokenType = {
     BOTH: "Both"
 }
 /**
- * 인증결과
+ * 인증결과 - 미사용
  */
 const ValidationType = {
     MATCHED: "Matched", /** 유효 */
@@ -60,6 +77,11 @@ const ValidationType = {
     ILLEGAL: "Illegal"
 }
 
+/**
+ * 인증값 유효성 확인 - 미사용
+ * @param param 인증키
+ * @returns 정상일 경우 true, 아니면 false
+ */
 const IsValidationType = (param : any) => {
     return Object.values(ValidationType).includes(param);
 }
@@ -133,5 +155,6 @@ export {
     CookieOption,
     VALIDATION_DATA_FORMAT,
     LOGIN_RESULT,
-    ERROR_DESC
+    ERROR_DESC,
+    HistoryType
 };

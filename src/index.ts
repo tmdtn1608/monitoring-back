@@ -4,8 +4,9 @@ import http from 'http';
 import licenseRouter from './Routes/License.js';
 import deviceRouter from './Routes/Device.js';
 import processRouter from './Routes/process.js';
+import historyRouter from './Routes/History.js';
 import { DB_CLIENT } from "./DBConnector.js"
-import { ConstInit } from './Const.js';
+import { ConstInit,HistoryType } from './Const.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 dotenv.config();
@@ -40,7 +41,6 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     clientCnt++;
     const origin = req.headers.origin as string | undefined;
     console.log(`Connection establish: ${origin}`);
-    // TODO : 기기 부팅 히스토리 추가
   
     ws.on('message', (message: string) => {
         console.log(`Received: ${message}`);
@@ -49,7 +49,6 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
   
     ws.on('close', () => {
         console.log('Disconnect');
-        // TODO : 기기 종료 히스토리 추가
         if(clientCnt > 0) clientCnt--;
     });
 });
@@ -70,6 +69,7 @@ app.get("/", async (req:Request, res:Response): Promise<void> => {
 app.use("/license", licenseRouter);
 app.use("/device", deviceRouter);
 app.use("/process", processRouter);
+app.use("/history", historyRouter);
 
 // 서버 시작
 server.listen(port, () => {
