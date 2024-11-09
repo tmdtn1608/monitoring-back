@@ -31,25 +31,31 @@ app.use((req: Request, res: Response, next) => {
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
-let clientCnt : number = 0;
+const clients = new Set<WebSocket>();
 ConstInit();
 DB_CLIENT.GetInstance().Check().then(() => {
     console.log("DB Connection OK");
 });
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
-    clientCnt++;
+    clients.add(ws);
     const origin = req.headers.origin as string | undefined;
     console.log(`Connection establish: ${origin}`);
   
     ws.on('message', (message: string) => {
         console.log(`Received: ${message}`);
         ws.send(`Receive success`);
+
+        for (const client of clients) {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+                client.send(message);
+            }
+        }
     });
   
     ws.on('close', () => {
+        clients.delete(ws);
         console.log('Disconnect');
-        if(clientCnt > 0) clientCnt--;
     });
 });
 // express 5 변경점 : https://news.hada.io/topic?id=17320
@@ -63,7 +69,7 @@ app.get("/", async (req:Request, res:Response): Promise<void> => {
     //     console.error('Error fetching process list:', error);
     //     res.status(500);
     // });
-    res.send(`Hello, World! / current User : ${clientCnt}`);
+    res.send(`Hello, World! / current User : ${clients.size}`);
 });
 
 app.use("/license", licenseRouter);

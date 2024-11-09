@@ -59,15 +59,37 @@ router.post("/:type", (req, res) => {
 /**
  * 블랙/화이트리스트 프로세스 삭제
  */
-router.delete("/:type", (req,res) => {
-    const processType = req.params.type;
-    if(processType == null || processType == undefined) 
-        res.status(400).send("param not exist");
-    if(!CheckProcessType(processType)) res.status(400).send("wrong param");
+// router.delete("/:type", (req,res) => {
+//     const processType = req.params.type;
+//     if(processType == null || processType == undefined) 
+//         res.status(400).send("param not exist");
+//     if(!CheckProcessType(processType)) res.status(400).send("wrong param");
 
-    let IsBlack = processType == "Black" ? 1 : 0;
+//     let IsBlack = processType == "Black" ? 1 : 0;
 
-    res.send(`process delete, ${processType}`);
+//     res.send(`process delete, ${processType}`);
+// });
+
+/**
+ * 블랙/화이트리스트 프로세스 삭제
+ */
+router.delete("/", (req,res) => {
+    let param = req.body;
+    if(param.ProcessName === undefined || param.ProcessName == null){
+        res.status(400).send("ProcessName required");
+    }
+    // ProcessName
+    let processName = param.ProcessName;
+
+    DB_CLIENT.GetInstance()
+    .AsyncQuery(`DELETE FROM ProcessList WHERE ProcessName ='${processName}'`)
+    .then((result) => {
+        res.json({result : true });
+    })
+    .catch((error) => {
+        console.error('Error fetching process list:', error);
+        res.status(500).json({result : false});
+    });
 });
 
 /**
