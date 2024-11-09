@@ -3,8 +3,9 @@ import { WebSocketServer, WebSocket } from 'ws';
 import http from 'http';
 import licenseRouter from './Routes/License.js';
 import deviceRouter from './Routes/Device.js';
-import processRouter from './Routes/process.js';
+import processRouter from './Routes/Process.js';
 import historyRouter from './Routes/History.js';
+import processLogRouter from './Routes/ProcessLog.js';
 import { DB_CLIENT } from "./DBConnector.js"
 import { ConstInit,HistoryType } from './Const.js';
 import dotenv from 'dotenv';
@@ -31,22 +32,26 @@ app.use((req: Request, res: Response, next) => {
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
-const clients = new Set<WebSocket>();
+type Dict = Record<string, WebSocket>;
+const clients : Dict = {};
 ConstInit();
 DB_CLIENT.GetInstance().Check().then(() => {
     console.log("DB Connection OK");
 });
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
-    clients.add(ws);
+    // TODO : 최초 접속시 디바이스 아이디를 같이 받는다.
+    // clients.add('ㅅㄷㄴㅅ',ws);
+    clients['test'] = ws
     const origin = req.headers.origin as string | undefined;
     console.log(`Connection establish: ${origin}`);
   
     ws.on('message', (message: string) => {
-        console.log(`Received: ${message}`);
+        // console.log(`Received: ${message}`);
         ws.send(`Receive success`);
 
-        for (const client of clients) {
+        for (const key in clients) {
+            let client = clients[key];
             if (client !== ws && client.readyState === WebSocket.OPEN) {
                 client.send(message);
             }
@@ -54,7 +59,17 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     });
   
     ws.on('close', () => {
-        clients.delete(ws);
+        let temp = '';
+        for (const key in clients) {
+            if (clients.hasOwnProperty(key)) {
+                if(clients[key] === ws) {
+                    temp = key;
+                    break;
+                }
+            }
+        }
+        delete clients[temp];
+
         console.log('Disconnect');
     });
 });
@@ -76,6 +91,7 @@ app.use("/license", licenseRouter);
 app.use("/device", deviceRouter);
 app.use("/process", processRouter);
 app.use("/history", historyRouter);
+app.use("/log", processLogRouter);
 
 // 서버 시작
 server.listen(port, () => {

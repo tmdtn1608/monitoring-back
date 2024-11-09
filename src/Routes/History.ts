@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { DB_CLIENT } from '../DBConnector.js';
 import { HistoryType } from '../Const.js';
+import { StringBuilder } from '../Util.js';
 
 const router = Router();
 
@@ -29,8 +30,18 @@ router.post("/",(req,res) => {
  * 실시간 온라인 클라이언트 조회
  */
 router.get("/", (req, res) => {
+    let qb = new StringBuilder();
+    qb.append('SELECT Device, MAX(RegDate) AS last_login ')
+        .append('FROM History t1 ')
+        .append(`WHERE ActType = 'Client login' `)
+        .append('AND NOT EXISTS ( ')
+        .append('SELECT 1 FROM History t2 ')
+        .append('WHERE t2.Device = t1.Device ')
+        .append(`AND t2.ActType = 'Client logout' `)
+        .append('AND t2.RegDate > t1.RegDate)')
+        .append('GROUP BY Device');
     DB_CLIENT.GetInstance()
-    .AsyncQuery(`select * from History WHERE ActType='${HistoryType.CLIENT_LOGIN}'`)
+    .AsyncQuery(qb.toString())
     .then((result) => {
         // const jsonResult = JSON.stringify(result);
         res.json(result);
