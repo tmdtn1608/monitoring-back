@@ -45,30 +45,43 @@ router.get('/:type',(req , res) => {
 /**
  * 블랙/화이트리스트 프로세스 등록
  */
-router.post("/:type", (req, res) => {
-    const processType = req.params.type;
-    if(processType == null || processType == undefined) 
-        res.status(400).send("param not exist");
-    if(!CheckProcessType(processType)) res.status(400).send("wrong param");
+router.post("/", (req, res) => {
+    let param = req.body;
+    console.log(JSON.stringify(param));
+    // processName
+    if(param.processName === undefined || param.processName == null){
+        res.status(400).send("ProcessName required");
+    }
+    // IsBlack
+    if(param.isBlack === undefined || param.isBlack == null){
+        res.status(400).send("IsBlack required");
+    }
+    // IsAuto
+    if(param.isAuto === undefined || param.isAuto == null){
+        res.status(400).send("IsAuto required");
+    }
+    // Memo
+    if(param.memo === undefined || param.memo == null){
+        res.status(400).send("Memo required");
+    }
 
-    let IsBlack = processType == "Black" ? 1 : 0;
+    let qb = new StringBuilder();
+    qb.append('INSERT INTO ProcessLIST (ProcessName, IsBlack, IsAuto, MEMO) VALUES ')
+    .append(`('${param.processName}',${param.isBlack},${param.isAuto},'${param.memo}')`);
 
-    res.send(`process post, ${processType}`);
+
+    DB_CLIENT.GetInstance()
+    .AsyncQuery(qb.toString())
+    .then((result) => {
+        console.log('process add complete');
+        res.send(result);
+    })
+    .catch((error) => {
+        console.error('Error fetching process list:', error);
+        res.status(500).json({result : false});
+    });
 });
 
-/**
- * 블랙/화이트리스트 프로세스 삭제
- */
-// router.delete("/:type", (req,res) => {
-//     const processType = req.params.type;
-//     if(processType == null || processType == undefined) 
-//         res.status(400).send("param not exist");
-//     if(!CheckProcessType(processType)) res.status(400).send("wrong param");
-
-//     let IsBlack = processType == "Black" ? 1 : 0;
-
-//     res.send(`process delete, ${processType}`);
-// });
 
 /**
  * 블랙/화이트리스트 프로세스 삭제
@@ -96,17 +109,13 @@ router.delete("/", (req,res) => {
  * 블랙/화이트리스트 프로세스 수정
  */
 router.put("/", (req,res) => {
-    // const processType = req.params.type;
-    // if(processType == null || processType == undefined) 
-    //     res.status(400).send("param not exist");
-    // if(!CheckProcessType(processType)) res.status(400).send("wrong param");
-
     let param = req.body;
-    if(param.ProcessName === undefined || param.ProcessName == null){
+    console.log(JSON.stringify(param));
+    if(param.processName === undefined || param.processName == null){
         res.status(400).send("ProcessName required");
     }
     // ProcessName
-    let processName = param.ProcessName;
+    let processName = param.processName;
 
     // IsBlack
     let IsBlack = param.IsBlack === undefined ? null : param.IsBlack;

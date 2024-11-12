@@ -8,7 +8,7 @@ const router = Router();
  * 조회
  */
 router.get('/', (req, res) => {
-    
+
     DB_CLIENT.GetInstance()
     .AsyncQuery(`select * from ProcessLog`)
     .then((result) => {
@@ -40,10 +40,11 @@ updated_at = CURRENT_TIMESTAMP;
         res.status(400).send("No actType");
     }
     
+    let processJson = JSON.stringify(param.process);
     let qb = new StringBuilder();
     qb.append('INSERT INTO ProcessLog (Device, Process) ')
-    .append(`VALUES ('${param.device}','${param.process}') `)
-    .append(`ON DUPLICATE KEY UPDATE Process = '${param.process}', `)
+    .append(`VALUES ('${param.device}','${processJson}') `)
+    .append(`ON DUPLICATE KEY UPDATE Process = '${processJson}', `)
     .append('UpdatedAt = CURRENT_TIMESTAMP');
 
     DB_CLIENT.GetInstance()

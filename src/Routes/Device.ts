@@ -49,7 +49,28 @@ router.delete("/", (req,res) => {
  * 기기정보 수정(별명, 메모 등) -> Backlog
  */
 router.put("/", (req,res) => {
-    res.send("device edit")
+    let param = req.body;
+    console.log(`param chk : ${JSON.stringify(param)}`);
+    if (param.mac === undefined || param.mac === null) {
+        res.status(400).send("No device");
+    }
+    if (param.nick === undefined || param.nick === null) {
+        res.status(400).send("No nick");
+    }
+    if (param.isUsed === undefined || param.isUsed === null) {
+        res.status(400).send("No isUsed");
+    }
+    let isUsed = param.isUsed === true ? 1 : 0;
+
+    DB_CLIENT.GetInstance()
+    .AsyncQuery(`UPDATE Device SET Nick = '${param.nick}', IsUsed = ${isUsed} WHERE mac = '${param.mac}'`)
+    .then((result) => {
+        res.json({result : true });
+    })
+    .catch((error) => {
+        console.error('Error fetching process list:', error);
+        res.status(500).json({result : false});
+    });
 });
 
 export default router;
