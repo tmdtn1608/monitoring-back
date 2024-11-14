@@ -9,22 +9,6 @@ const router = Router();
  */
 router.get('/', (req, res) => {
     let param = req.body;
-    
-    /*
-    SELECT pl.* FROM ProcessLog pl ,
-(SELECT Device, MAX(RegDate) AS last_login
-FROM History h1
-WHERE ActType = 'Client login'
-AND NOT EXISTS (
-    SELECT 1
-    FROM History h2
-    WHERE h2.Device = h1.Device
-    AND h2.ActType = 'Client logout'
-    AND h2.RegDate > h1.RegDate
-)
-GROUP BY Device ) live
-WHERE live.Device = pl.Device AND pl.Device = ''
-    */
 
     let qb = new StringBuilder();
     qb.append('SELECT pl.* FROM ProcessLog pl, ')
@@ -54,20 +38,6 @@ WHERE live.Device = pl.Device AND pl.Device = ''
  */
 router.get("/alive", (req,res) => {
 
-    /*
-
-    SELECT Device, MAX(RegDate) AS last_login
-FROM History h1
-WHERE ActType = 'Client login'
-AND NOT EXISTS (
-    SELECT 1
-    FROM History h2
-    WHERE h2.Device = h1.Device
-    AND h2.ActType = 'Client logout'
-    AND h2.RegDate > h1.RegDate
-    )
-GROUP BY Device
-*/
     let qb = new StringBuilder();
     qb.append('SELECT Device, MAX(RegDate) AS last_login FROM History h1 ')
     .append(`WHERE ActType = 'Client login' AND NOT EXISTS `)
@@ -93,12 +63,6 @@ GROUP BY Device
  */
 router.post('/', (req,res) => {
 
-    /*
-INSERT INTO users (username, email) 
-VALUES ('johndoe', 'john@example.com')
-ON DUPLICATE KEY UPDATE email = 'john@newdomain.com',
-updated_at = CURRENT_TIMESTAMP;
-    */
     let param = req.body;
     if (param.device === undefined || param.device === null) {
         res.status(400).send("No device");

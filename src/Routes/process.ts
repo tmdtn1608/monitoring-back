@@ -52,6 +52,10 @@ router.post("/", (req, res) => {
     if(param.processName === undefined || param.processName == null){
         res.status(400).send("ProcessName required");
     }
+    // device
+    if(param.device === undefined || param.device == null){
+        res.status(400).send("device required");
+    }
     // IsBlack
     if(param.isBlack === undefined || param.isBlack == null){
         res.status(400).send("IsBlack required");
@@ -66,8 +70,8 @@ router.post("/", (req, res) => {
     }
 
     let qb = new StringBuilder();
-    qb.append('INSERT INTO ProcessLIST (ProcessName, IsBlack, IsAuto, MEMO) VALUES ')
-    .append(`('${param.processName}',${param.isBlack},${param.isAuto},'${param.memo}')`);
+    qb.append('INSERT INTO ProcessLIST (ProcessName, Device, IsBlack, IsAuto, MEMO) VALUES ')
+    .append(`('${param.processName}','${param.device}',${param.isBlack},${param.isAuto},'${param.memo}')`);
 
 
     DB_CLIENT.GetInstance()
@@ -116,7 +120,8 @@ router.put("/", (req,res) => {
     }
     // ProcessName
     let processName = param.processName;
-
+    // Device
+    let Device = param.device === undefined ? null : param.device;
     // IsBlack
     let IsBlack = param.IsBlack === undefined ? null : param.IsBlack;
     // IsAuto
@@ -137,9 +142,11 @@ router.put("/", (req,res) => {
     let queryArr : string[] = [];
     const separator: string = ", ";
     if(IsBlack != null) {
-        queryArr.push(`IsBlack = ${IsBlack}`)
+        queryArr.push(`Device = '${Device}'`);
     }
-
+    if(IsBlack != null) {
+        queryArr.push(`IsBlack = ${IsBlack}`);
+    }
     if(IsAuto != null) {
         queryArr.push(`IsAuto = ${IsAuto}`);
     }
