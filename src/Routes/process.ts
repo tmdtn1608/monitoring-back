@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { CheckProcessType, StringBuilder } from '../Util.js';
 import { DB_CLIENT } from '../DBConnector.js';
+import { SetBlackWhiteList } from '../index.js';
 
 const router = Router();
 
@@ -78,12 +79,14 @@ router.post("/", (req, res) => {
     .AsyncQuery(qb.toString())
     .then((result) => {
         console.log('process add complete');
+        SetBlackWhiteList();
         res.send(result);
     })
     .catch((error) => {
         console.error('Error fetching process list:', error);
         res.status(500).json({result : false});
     });
+    // TODO : global blackWhiteList 갱신
 });
 
 

@@ -10,11 +10,13 @@ import { DB_CLIENT } from "./DBConnector.js"
 import { ConstInit,HistoryType } from './Const.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { RowDataPacket } from 'mysql2';
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 const port : number = 5000;
+export let blackWhiteList : RowDataPacket[] | null = null;
 
 app.use(
     cors({
@@ -33,7 +35,7 @@ app.use((req: Request, res: Response, next) => {
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
 type Dict = Record<string, WebSocket>;
-const clients : Dict = {};
+export const clients : Dict = {};
 ConstInit();
 DB_CLIENT.GetInstance().Check().then(() => {
     console.log("DB Connection OK");
@@ -47,12 +49,14 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
         // console.log(`Received: ${message}`);
         let parsedMsg = JSON.parse(message);
         console.log(`Receive success : ${parsedMsg.from}`);
+        // 클라이언트에서 전송
         if(parsedMsg.from != "web") {
             if(clients[parsedMsg.from] === null 
                 || clients[parsedMsg.from] === undefined){
                 clients[parsedMsg.from] = ws;
             }
         }
+        // 웹에서 전송
         else {
             if(clients[parsedMsg.device] !== null 
                 && clients[parsedMsg.device] !== undefined) {
@@ -61,13 +65,6 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
             }
              
         }
-
-        // for (const key in clients) {
-        //     let client = clients[key];
-        //     if (client !== ws && client.readyState === WebSocket.OPEN) {
-        //         client.send(message);
-        //     }
-        // }
     });
   
     ws.on('close', () => {
@@ -87,15 +84,6 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
 });
 // express 5 변경점 : https://news.hada.io/topic?id=17320
 app.get("/", async (req:Request, res:Response): Promise<void> => {
-    // DB_CLIENT.GetInstance().AsyncQuery("select * from License")
-    // .then((result) => {
-    //     const jsonResult = JSON.stringify(result);
-    //     res.json(result);
-    // })
-    // .catch((error) => {
-    //     console.error('Error fetching process list:', error);
-    //     res.status(500);
-    // });
     res.send(`Hello, World! / current User : ${clients.size}`);
 });
 
@@ -108,4 +96,24 @@ app.use("/log", processLogRouter);
 // 서버 시작
 server.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
+
+    DB_CLIENT.GetInstance()
+    .AsyncQuery('SELECT * FROM ProcessList')
+    .then((result) => {
+        blackWhiteList = result;
+    })
+    .catch((error) => {
+        console.error(`Failed get Black/White list : ${error}`);
+    })
 });
+
+export const SetBlackWhiteList = () => {
+    DB_CLIENT.GetInstance()
+    .AsyncQuery('SELECT * FROM ProcessList')
+    .then((result) => {
+        blackWhiteList = result;
+    })
+    .catch((error) => {
+        console.error(`Failed get Black/White list : ${error}`);
+    });
+}

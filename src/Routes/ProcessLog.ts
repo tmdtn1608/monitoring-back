@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import { CheckProcessType, StringBuilder } from '../Util.js';
 import { DB_CLIENT } from '../DBConnector.js';
+import { blackWhiteList, clients } from '../index.js';
+import { parse } from 'path';
 
 const router = Router();
 
@@ -57,9 +59,16 @@ router.get("/alive", (req,res) => {
     });
 });
 
+interface processINF {
+    pid? : number,
+    name? : string,
+    status? : string,
+    cpu_percent? : null | number,
+    memory_percent? : null | number
+}
 
 /**
- * 
+ * 실행중인 프로세스 저장.
  */
 router.post('/', (req,res) => {
 
@@ -70,7 +79,33 @@ router.post('/', (req,res) => {
     if (param.process === undefined || param.process === null) {
         res.status(400).send("No actType");
     }
+    /*
+"process": [{"pid": 0, "name": "kernel_task", "status": "running", "cpu_percent": null, "memory_percent": null}]
+    */
+    console.log(`saved black/white list : ${blackWhiteList}`);
+    if (blackWhiteList != null) {
+        blackWhiteList.forEach(item => {
+            // item.ProcessName
+            if(item.Device == param.device) {
+                Array.from(param.process.process,(k,v) => {
+                    // k is unknown
+                    if (typeof k === "object" && k != null) {
+                        let processObject = k as processINF;
+                        if (processObject.name === item.ProcessName 
+                            && item.IsBlack === 1
+                        ) {
+                            clients[param.device].send(item.ProcessName);
+                        }
+                        
+                    }
 
+                });
+            }
+            console.log(`device : ${item.Device}`);
+            console.log(`process : ${item.ProcessName}`);
+        });
+    }
+    // clients
     let processJson = JSON.stringify(param.process);
     let qb = new StringBuilder();
     qb.append('INSERT INTO ProcessLog (Device, Process) ')
