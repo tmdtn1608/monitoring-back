@@ -40,22 +40,34 @@ DB_CLIENT.GetInstance().Check().then(() => {
 });
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
-    // TODO : 최초 접속시 디바이스 아이디를 같이 받는다.
-    // clients.add('ㅅㄷㄴㅅ',ws);
-    clients['test'] = ws
     const origin = req.headers.origin as string | undefined;
-    console.log(`Connection establish: ${origin}`);
+    console.log(`Connection established.`);
   
     ws.on('message', (message: string) => {
         // console.log(`Received: ${message}`);
-        ws.send(`Receive success`);
-
-        for (const key in clients) {
-            let client = clients[key];
-            if (client !== ws && client.readyState === WebSocket.OPEN) {
-                client.send(message);
+        let parsedMsg = JSON.parse(message);
+        console.log(`Receive success : ${parsedMsg.from}`);
+        if(parsedMsg.from != "web") {
+            if(clients[parsedMsg.from] === null 
+                || clients[parsedMsg.from] === undefined){
+                clients[parsedMsg.from] = ws;
             }
         }
+        else {
+            if(clients[parsedMsg.device] !== null 
+                && clients[parsedMsg.device] !== undefined) {
+                let target = clients[parsedMsg.device];
+                target.send(parsedMsg.process);
+            }
+             
+        }
+
+        // for (const key in clients) {
+        //     let client = clients[key];
+        //     if (client !== ws && client.readyState === WebSocket.OPEN) {
+        //         client.send(message);
+        //     }
+        // }
     });
   
     ws.on('close', () => {
