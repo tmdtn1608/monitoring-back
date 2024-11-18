@@ -2,20 +2,15 @@ import { Router } from 'express';
 import { CheckProcessType, StringBuilder } from '../Util.js';
 import { DB_CLIENT } from '../DBConnector.js';
 import { SetBlackWhiteList } from '../index.js';
+import { logBlackAdded, logWhiteAdded } from '../Services/LogService.js';
+import { GetProcessList, RegistProcess } from '../Services/ProcessService.js';
 
 const router = Router();
 
 router.get('/', (req, res) => {
-    DB_CLIENT.GetInstance()
-    .AsyncQuery(`select * from ProcessList`)
-    .then((result) => {
-        // const jsonResult = JSON.stringify(result);
-        res.json(result);
-    })
-    .catch((error) => {
-        console.error('Error fetching process list:', error);
-        res.status(500);
-    });
+    let result = GetProcessList();
+    if(result == null) res.status(500);
+    else res.json(result);
 });
 
 /**
@@ -70,23 +65,14 @@ router.post("/", (req, res) => {
         res.status(400).send("Memo required");
     }
 
-    let qb = new StringBuilder();
-    qb.append('INSERT INTO ProcessLIST (ProcessName, Device, IsBlack, IsAuto, MEMO) VALUES ')
-    .append(`('${param.processName}','${param.device}',${param.isBlack},${param.isAuto},'${param.memo}')`);
-
-
-    DB_CLIENT.GetInstance()
-    .AsyncQuery(qb.toString())
-    .then((result) => {
-        console.log('process add complete');
+    let result = RegistProcess(param);
+    if(!result) res.status(500).json({result : false});
+    else {
         SetBlackWhiteList();
+        if (param.isBlack === 1) logBlackAdded(param.device);
+        else if (param.isBlack === 0) logWhiteAdded(param.device);
         res.send(result);
-    })
-    .catch((error) => {
-        console.error('Error fetching process list:', error);
-        res.status(500).json({result : false});
-    });
-    // TODO : global blackWhiteList 갱신
+    }
 });
 
 
@@ -104,6 +90,8 @@ router.delete("/", (req,res) => {
     DB_CLIENT.GetInstance()
     .AsyncQuery(`DELETE FROM ProcessList WHERE ProcessName ='${processName}'`)
     .then((result) => {
+        // TODO : 삭제하려는 프로세스 Black/White 판별 플래그 조회
+        // TODO : 삭제로그 추가
         res.json({result : true });
     })
     .catch((error) => {

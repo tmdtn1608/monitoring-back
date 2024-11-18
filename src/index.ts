@@ -11,6 +11,8 @@ import { ConstInit,HistoryType } from './Const.js';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import { RowDataPacket } from 'mysql2';
+import { logProcKill } from './Services/LogService.js';
+import { GetProcessList } from './Services/ProcessService.js';
 dotenv.config();
 
 const app = express();
@@ -62,6 +64,7 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
                 && clients[parsedMsg.device] !== undefined) {
                 let target = clients[parsedMsg.device];
                 target.send(parsedMsg.process);
+                logProcKill(parsedMsg.device);
             }
              
         }
@@ -96,24 +99,9 @@ app.use("/log", processLogRouter);
 // 서버 시작
 server.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-
-    DB_CLIENT.GetInstance()
-    .AsyncQuery('SELECT * FROM ProcessList')
-    .then((result) => {
-        blackWhiteList = result;
-    })
-    .catch((error) => {
-        console.error(`Failed get Black/White list : ${error}`);
-    })
+    SetBlackWhiteList();
 });
 
 export const SetBlackWhiteList = () => {
-    DB_CLIENT.GetInstance()
-    .AsyncQuery('SELECT * FROM ProcessList')
-    .then((result) => {
-        blackWhiteList = result;
-    })
-    .catch((error) => {
-        console.error(`Failed get Black/White list : ${error}`);
-    });
+    blackWhiteList = GetProcessList();
 }

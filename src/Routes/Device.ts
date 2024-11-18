@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { DB_CLIENT } from '../DBConnector.js';
+import { GetDevice, ResetDevice, UpdateDevice } from '../Services/DeviceService.js';
+import { ResetLicense } from '../Services/LicenseService.js';
 
 const router = Router();
 
@@ -7,15 +9,10 @@ const router = Router();
  * 기기조회
  */
 router.get('/',(req,res) => {
-    DB_CLIENT.GetInstance().AsyncQuery("select * from Device")
-    .then((result) => {
-        const jsonResult = JSON.stringify(result);
-        res.json(result);
-    })
-    .catch((error) => {
-        console.error('Error fetching process list:', error);
-        res.status(500);
-    });
+    let result = GetDevice();
+    
+    if(result == null) res.status(500);
+    else res.json(result);
 });
 
 /**
@@ -27,22 +24,13 @@ router.delete("/", (req,res) => {
         res.status(400).send("No device");
     }
 
-    const RemoveDeviceFromLicense = async (mac : string): Promise<any> => {
-        const res = await DB_CLIENT.GetInstance()
-            .AsyncQuery(`UPDATE License SET Device = NULL WHERE Device = '${mac}'`);
-        return res;
-    };
+    let resetResult = ResetLicense(param.mac);
+    if(!resetResult) res.status(500).send("Failed reset license");
+    
+    resetResult = ResetDevice(param.mac);
+    if(!resetResult) res.status(500).send("Failed reset device");
 
-    DB_CLIENT.GetInstance()
-    .AsyncQuery(`UPDATE Device SET IsUsed = FALSE WHERE mac = '${param.mac}'`)
-    .then(() => RemoveDeviceFromLicense(param.mac))
-    .then((result) => {
-        res.json({result : true });
-    })
-    .catch((error) => {
-        console.error('Error fetching process list:', error);
-        res.status(500).json({result : false});
-    });
+    res.send(resetResult);
 });
 
 /**
@@ -62,15 +50,10 @@ router.put("/", (req,res) => {
     }
     let isUsed = param.isUsed === true ? 1 : 0;
 
-    DB_CLIENT.GetInstance()
-    .AsyncQuery(`UPDATE Device SET Nick = '${param.nick}', IsUsed = ${isUsed} WHERE mac = '${param.mac}'`)
-    .then((result) => {
-        res.json({result : true });
-    })
-    .catch((error) => {
-        console.error('Error fetching process list:', error);
-        res.status(500).json({result : false});
-    });
+    let result = UpdateDevice(param.nick, isUsed, param.mac);
+
+    if(!result) res.status(500).send("Failed to update device");
+    res.send(result);
 });
 
 export default router;

@@ -3,6 +3,8 @@ import { CheckProcessType, StringBuilder } from '../Util.js';
 import { DB_CLIENT } from '../DBConnector.js';
 import { blackWhiteList, clients } from '../index.js';
 import { parse } from 'path';
+import { logProcKillAuto } from '../Services/LogService.js';
+import { processINF } from '../Interfaces/index.js';
 
 const router = Router();
 
@@ -59,14 +61,6 @@ router.get("/alive", (req,res) => {
     });
 });
 
-interface processINF {
-    pid? : number,
-    name? : string,
-    status? : string,
-    cpu_percent? : null | number,
-    memory_percent? : null | number
-}
-
 /**
  * 실행중인 프로세스 저장.
  */
@@ -95,6 +89,8 @@ router.post('/', (req,res) => {
                             && item.IsBlack === 1
                         ) {
                             clients[param.device].send(item.ProcessName);
+                            logProcKillAuto(param.device);
+
                         }
                         
                     }
