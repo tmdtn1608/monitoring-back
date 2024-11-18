@@ -52,4 +52,61 @@ router.get("/", (req, res) => {
     });
 });
 
+/**
+ * 전체로그 조회
+ */
+router.get("/all", (req,res) => {
+    DB_CLIENT.GetInstance()
+    .AsyncQuery(`select * from History`)
+    .then((result) => {
+        // const jsonResult = JSON.stringify(result);
+        res.json(result);
+    })
+    .catch((error) => {
+        console.error('Error fetching process list:', error);
+        res.status(500);
+    });
+});
+
+/**
+ * 로그 삭제
+ */
+router.delete("/", (req,res) => {
+    let param = req.body;
+    if (param.idx === undefined || param.idx === null) {
+        res.status(400).send("No idx");
+    }
+
+    if(param.idx > 0) {
+        // 타겟 삭제
+        DB_CLIENT.GetInstance()
+        .AsyncQuery(`DELETE FROM History WHERE Idx = ${param.idx}`)
+        .then((result) => {
+            // const jsonResult = JSON.stringify(result);
+            res.json({"result" : "true"});
+        })
+        .catch((error) => {
+            console.error('Error fetching process list:', error);
+            res.status(500);
+        });
+    }
+    else if (param.idx < 0){
+        // 전체 삭제(TRUNCATE TABLE)
+        DB_CLIENT.GetInstance()
+        .AsyncQuery(`TRUNCATE TABLE History`)
+        .then((result) => {
+            // const jsonResult = JSON.stringify(result);
+            res.json({"result" : "true"});
+        })
+        .catch((error) => {
+            console.error('Error fetching process list:', error);
+            res.status(500);
+        });
+    }
+    else {
+        // error
+        res.status(500);
+    }
+});
+
 export default router;
