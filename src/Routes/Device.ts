@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { DB_CLIENT } from '../DBConnector.js';
 import { GetDevice, ResetDevice, UpdateDevice } from '../Services/DeviceService.js';
 import { ResetLicense } from '../Services/LicenseService.js';
 

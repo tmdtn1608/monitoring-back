@@ -1,10 +1,4 @@
 import { Router } from 'express';
-import { CheckProcessType, StringBuilder } from '../Util.js';
-import { DB_CLIENT } from '../DBConnector.js';
-import { blackWhiteList, clients } from '../index.js';
-import { parse } from 'path';
-import { logProcKillAuto } from '../Services/LogService.js';
-import { processINF } from '../Interfaces/index.js';
 import { CheckProcessList, GetLiveClient, GetLiveProcess, SaveProcess } from '../Services/ProcessLogService.js';
 
 const router = Router();
@@ -24,7 +18,6 @@ router.get('/', async (req, res) => {
  */
 router.get("/alive", async (req,res) => {
     let result = await GetLiveClient();
-    console.log(`alive result : ${result}`);
     if(result == null) res.status(500);
     else res.json(result);
 });

@@ -1,6 +1,4 @@
 import { Router, Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import { DB_CLIENT } from "../DBConnector.js"
 import { CheckLicense, CreateLicense, DeleteLicense, GetLicense, SetLicense } from '../Services/LicenseService.js';
 import { RegistDevice } from '../Services/DeviceService.js';
 
@@ -11,7 +9,6 @@ const router = Router();
  */
 router.get('/', async (req : Request, res : Response) : Promise<void> => {
     let result = await GetLicense();
-    console.log(`get license : ${result}`);
     if(result == null) res.status(500);
     else res.json(result);
 });
@@ -59,7 +56,7 @@ router.post("/regist", async (req,res) => {
     
     result = await SetLicense(param.mac, param.license);
     if(!result) res.status(500).send("Failed to set license");
-    else res.send(result);
+    else res.json({"result" : result});
     
 });
 
@@ -77,7 +74,6 @@ router.post("/check", async (req,res) => {
             res.status(400).send("No mac address");
         }
         let result = await CheckLicense(param.license, param.mac);
-        console.log(`chk result : ${result}`);
         res.json({"result" : result});
     } catch (error) {
         res.status(500).send("Failed to check license");

@@ -86,28 +86,6 @@ const IsValidationType = (param : any) => {
     return Object.values(ValidationType).includes(param);
 }
 
-const VALIDATION_DATA_FORMAT = [
-    's2isbe',
-    'start',
-    'nid',
-    'plen',
-    'mtype',
-    's1_st',
-    's1_val1',
-    's1_val2',
-    's2_st',
-    's2_val1',
-    's2_val2',
-    'temp',
-    'humi',
-    'bat',
-    'crc16',
-    'last',
-    'rdate',
-    'gwid',
-    'securecode'
-];
-
 function ConstInit() {
     dotenv.config();
     CONST.API_PORT = Number(process.env.API_PORT);
@@ -153,7 +131,6 @@ export {
     ValidationType,
     IsValidationType,
     CookieOption,
-    VALIDATION_DATA_FORMAT,
     LOGIN_RESULT,
     ERROR_DESC,
     HistoryType

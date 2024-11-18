@@ -1,7 +1,4 @@
 import { Router } from 'express';
-import { DB_CLIENT } from '../DBConnector.js';
-import { HistoryType } from '../Const.js';
-import { StringBuilder } from '../Util.js';
 import { logClientLogin, logClientLogout } from '../Services/LogService.js';
 import { DeleteAllHistory, DeleteHistory, GetAllLog, GetLiveDevice } from '../Services/HistoryService.js';
 

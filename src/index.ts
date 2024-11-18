@@ -1,23 +1,23 @@
 import express, { Request, Response } from 'express';
 import { WebSocketServer, WebSocket } from 'ws';
+import { RowDataPacket } from 'mysql2';
 import http from 'http';
+import cors from 'cors';
+import dotenv from 'dotenv';
+dotenv.config();
 import licenseRouter from './Routes/License.js';
 import deviceRouter from './Routes/Device.js';
 import processRouter from './Routes/Process.js';
 import historyRouter from './Routes/History.js';
 import processLogRouter from './Routes/ProcessLog.js';
 import { DB_CLIENT } from "./DBConnector.js"
-import { ConstInit,HistoryType } from './Const.js';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import { RowDataPacket } from 'mysql2';
+import { ConstInit } from './Const.js';
 import { logProcKill } from './Services/LogService.js';
 import { GetProcessList } from './Services/ProcessService.js';
-dotenv.config();
 
 const app = express();
 app.use(express.json());
-const port : number = 5000;
+const port : number = Number(process.env.API_PORT) | 5000;
 export let blackWhiteList : RowDataPacket[] | null = null;
 
 app.use(
@@ -48,7 +48,6 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
     console.log(`Connection established.`);
   
     ws.on('message', (message: string) => {
-        // console.log(`Received: ${message}`);
         let parsedMsg = JSON.parse(message);
         console.log(`Receive success : ${parsedMsg.from}`);
         // 클라이언트에서 전송
@@ -97,9 +96,9 @@ app.use("/history", historyRouter);
 app.use("/log", processLogRouter);
 
 // 서버 시작
-server.listen(port, () => {
+server.listen(port, async() => {
     console.log(`Server is running on http://localhost:${port}`);
-    SetBlackWhiteList();
+    await SetBlackWhiteList();
 });
 
 export const SetBlackWhiteList = async () => {

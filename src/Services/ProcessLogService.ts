@@ -48,7 +48,6 @@ export const GetLiveClient = async () => {
         res = await DB_CLIENT.GetInstance()
         .AsyncQuery(qb.toString())
         .then((result) => {
-            console.log(`alive : ${JSON.stringify(result)}`);
             return result;
         })
         .catch((error) => {

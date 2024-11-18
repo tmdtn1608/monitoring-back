@@ -11,7 +11,6 @@ export const logClientLogin = async (device : string) => {
         await DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.CLIENT_LOGIN}')`)
         .then((result) => {
-            // const jsonResult = JSON.stringify(result);
             res = true;
         })
         .catch((error) => {
@@ -36,7 +35,6 @@ export const logClientLogout = async (device : string) => {
         await DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.CLIENT_LOGOUT}')`)
         .then((result) => {
-            // const jsonResult = JSON.stringify(result);
             res = true;
         })
         .catch((error) => {
@@ -61,7 +59,6 @@ export const logUserLogin = (device : string) => {
         DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.USER_LOGIN}')`)
         .then((result) => {
-            // const jsonResult = JSON.stringify(result);
             res = true;
         })
         .catch((error) => {
@@ -86,7 +83,6 @@ export const logUserLogout = (device : string) => {
         DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.USER_LOGOUT}')`)
         .then((result) => {
-            // const jsonResult = JSON.stringify(result);
             res = true;
         })
         .catch((error) => {
@@ -111,7 +107,6 @@ export const logBlackAdded = async (device : string) => {
         await DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.BLACK_ADDED}')`)
         .then((result) => {
-            // const jsonResult = JSON.stringify(result);
             res = true;
         })
         .catch((error) => {
@@ -136,7 +131,6 @@ export const logBlackRemoved = (device : string) => {
         DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.BLACK_REMOVED}')`)
         .then((result) => {
-            // const jsonResult = JSON.stringify(result);
             res = true;
         })
         .catch((error) => {
@@ -161,7 +155,6 @@ export const logWhiteAdded = async (device : string) => {
         await DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.WHITE_ADDED}')`)
         .then((result) => {
-            // const jsonResult = JSON.stringify(result);
             res = true;
         })
         .catch((error) => {
@@ -186,7 +179,6 @@ export const logWhiteRemoved = (device : string) => {
         DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.WHITE_REMOVED}')`)
         .then((result) => {
-            // const jsonResult = JSON.stringify(result);
             res = true;
         })
         .catch((error) => {
@@ -211,7 +203,6 @@ export const logProcKill = (device : string) => {
         DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.CMD_KILL_BLACK}')`)
         .then((result) => {
-            // const jsonResult = JSON.stringify(result);
             res = true;
         })
         .catch((error) => {
@@ -236,7 +227,6 @@ export const logProcKillAuto = (device : string) => {
         DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.AUTO_KILL_BLACK}')`)
         .then((result) => {
-            // const jsonResult = JSON.stringify(result);
             res = true;
         })
         .catch((error) => {

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { CheckProcessType, StringBuilder } from '../Util.js';
+import { CheckProcessType } from '../Util.js';
 import { DB_CLIENT } from '../DBConnector.js';
 import { SetBlackWhiteList } from '../index.js';
 import { logBlackAdded, logWhiteAdded } from '../Services/LogService.js';
@@ -28,7 +28,6 @@ router.get('/:type',(req , res) => {
     DB_CLIENT.GetInstance()
     .AsyncQuery(`select * from ProcessList WHERE IsBlack = ${IsBlack}`)
     .then((result) => {
-        // const jsonResult = JSON.stringify(result);
         res.json(result);
     })
     .catch((error) => {
