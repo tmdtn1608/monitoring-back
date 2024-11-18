@@ -1,27 +1,28 @@
 import { RowDataPacket } from 'mysql2';
 import { DB_CLIENT } from '../DBConnector.js';
 
-export const GetDevice = () => {
+export const GetDevice = async () => {
     let res : RowDataPacket[] | null = null;
     try {
-        DB_CLIENT.GetInstance().AsyncQuery("select * from Device")
+        res = await DB_CLIENT.GetInstance().AsyncQuery("select * from Device")
         .then((result) => {
-            res = result;
+            return result;
         })
         .catch((error) => {
             throw error;
         });
     } catch (error) {
         console.error(error);
+        return null;
     } finally {
         return res;
     }
 };
 
-export const ResetDevice = (device : string) => {
+export const ResetDevice = async (device : string) => {
     let res : boolean = false;
     try {
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`UPDATE Device SET IsUsed = FALSE WHERE mac = '${device}'`)
         .then((result) => {
             res = true;
@@ -36,10 +37,10 @@ export const ResetDevice = (device : string) => {
     }
 };
 
-export const UpdateDevice = (nick : string, isUsed : Number, device : string) => {
+export const UpdateDevice = async (nick : string, isUsed : Number, device : string) => {
     let res : boolean = false;
     try {
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`UPDATE Device SET Nick = '${nick}', IsUsed = ${isUsed} WHERE mac = '${device}'`)
         .then((result) => {
             res = true;
@@ -54,10 +55,10 @@ export const UpdateDevice = (nick : string, isUsed : Number, device : string) =>
     }
 };
 
-export const RegistDevice = (device : string) => {
+export const RegistDevice = async (device : string) => {
     let res : boolean = false;
     try {
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO Device (mac) VALUES ('${device}')`)
         .then((result) => {
             res = true;

@@ -2,7 +2,7 @@ import { RowDataPacket } from 'mysql2';
 import { DB_CLIENT } from '../DBConnector.js';
 import { StringBuilder } from '../Util.js';
 
-export const GetLiveDevice = () => {
+export const GetLiveDevice = async () => {
     let res : RowDataPacket[] | null = null;
     try {
         let qb = new StringBuilder();
@@ -15,10 +15,10 @@ export const GetLiveDevice = () => {
             .append(`AND t2.ActType = 'Client logout' `)
             .append('AND t2.RegDate > t1.RegDate)')
             .append('GROUP BY Device');
-        DB_CLIENT.GetInstance()
+        res = await DB_CLIENT.GetInstance()
         .AsyncQuery(qb.toString())
         .then((result) => {
-            res = result;
+            return result;
         })
         .catch((error) => {
             throw error;
@@ -30,13 +30,13 @@ export const GetLiveDevice = () => {
     }
 };
 
-export const GetAllLog = () => {
+export const GetAllLog = async () => {
     let res : RowDataPacket[] | null = null;
     try {
-        DB_CLIENT.GetInstance()
+        res = await DB_CLIENT.GetInstance()
         .AsyncQuery(`select * from History`)
         .then((result) => {
-            res = result;
+            return result;
         })
         .catch((error) => {
             throw error;
@@ -48,10 +48,10 @@ export const GetAllLog = () => {
     }
 };
 
-export const DeleteHistory = (idx : Number) => {
+export const DeleteHistory = async (idx : Number) => {
     let res : boolean = false;
     try {
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`DELETE FROM History WHERE Idx = ${idx}`)
         .then((result) => {
             res = true;
@@ -66,10 +66,10 @@ export const DeleteHistory = (idx : Number) => {
     }
 };
 
-export const DeleteAllHistory = () => {
+export const DeleteAllHistory = async () => {
     let res : boolean = false;
     try {
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`TRUNCATE TABLE History`)
         .then((result) => {
             res = true;

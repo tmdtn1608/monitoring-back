@@ -5,10 +5,10 @@ import { DB_CLIENT } from '../DBConnector.js';
  * @param device 
  * @returns 
  */
-export const logClientLogin = (device : string) => {
+export const logClientLogin = async (device : string) => {
     let res : boolean = false;
     try{
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.CLIENT_LOGIN}')`)
         .then((result) => {
             // const jsonResult = JSON.stringify(result);
@@ -30,10 +30,10 @@ export const logClientLogin = (device : string) => {
  * @param device 
  * @returns 
  */
-export const logClientLogout = (device : string) => {
+export const logClientLogout = async (device : string) => {
     let res : boolean = false;
     try{
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.CLIENT_LOGOUT}')`)
         .then((result) => {
             // const jsonResult = JSON.stringify(result);
@@ -105,10 +105,10 @@ export const logUserLogout = (device : string) => {
  * @param device 
  * @returns 
  */
-export const logBlackAdded = (device : string) => {
+export const logBlackAdded = async (device : string) => {
     let res : boolean = false;
     try{
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.BLACK_ADDED}')`)
         .then((result) => {
             // const jsonResult = JSON.stringify(result);
@@ -155,10 +155,10 @@ export const logBlackRemoved = (device : string) => {
  * @param device 
  * @returns 
  */
-export const logWhiteAdded = (device : string) => {
+export const logWhiteAdded = async (device : string) => {
     let res : boolean = false;
     try{
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO History (Device,ActType) VALUES ('${device}','${process.env.WHITE_ADDED}')`)
         .then((result) => {
             // const jsonResult = JSON.stringify(result);

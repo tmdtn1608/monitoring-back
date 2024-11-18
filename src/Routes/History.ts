@@ -7,7 +7,8 @@ import { DeleteAllHistory, DeleteHistory, GetAllLog, GetLiveDevice } from '../Se
 
 const router = Router();
 
-router.post("/",(req,res) => {
+router.post("/",async (req,res) => {
+    console.log(`login`);
     let param = req.body;
     if (param.mac === undefined || param.mac === null) {
         res.status(400).send("No device");
@@ -17,12 +18,12 @@ router.post("/",(req,res) => {
     }
 
     let result : boolean = false;
-    if(param.actType === process.env.CLIENT_LOGIN)
+    if(param.actType == process.env.CLIENT_LOGIN)
     {
-        result = logClientLogin(param.mac);
+        result = await logClientLogin(param.mac);
     }
-    else if (param.actType === process.env.CLIENT_LOGOUT) {
-        result = logClientLogout(param.mac);
+    else if (param.actType == process.env.CLIENT_LOGOUT) {
+        result = await logClientLogout(param.mac);
     }
     res.send(result);
 });
@@ -30,8 +31,8 @@ router.post("/",(req,res) => {
 /**
  * 실시간 온라인 클라이언트 조회
  */
-router.get("/", (req, res) => {
-    let result = GetLiveDevice();
+router.get("/", async (req, res) => {
+    let result = await GetLiveDevice();
     if(result == null) res.status(500).send("Failed live device");
     res.json(result);
 });
@@ -39,9 +40,9 @@ router.get("/", (req, res) => {
 /**
  * 전체로그 조회
  */
-router.get("/all", (req,res) => {
+router.get("/all", async (req,res) => {
 
-    let result = GetAllLog();
+    let result = await GetAllLog();
     if(result == null) res.status(500).send("Failed get all log");
     res.json(result);
 });
@@ -49,7 +50,7 @@ router.get("/all", (req,res) => {
 /**
  * 로그 삭제
  */
-router.delete("/", (req,res) => {
+router.delete("/", async (req,res) => {
     let param = req.body;
     if (param.idx === undefined || param.idx === null) {
         res.status(400).send("No idx");
@@ -57,13 +58,13 @@ router.delete("/", (req,res) => {
 
     if(param.idx > 0) {
         // 타겟 삭제
-        let result = DeleteHistory(param.idx);
+        let result = await DeleteHistory(param.idx);
         if(!result) res.status(500).send("Failed to delete log");
         else res.send(result);
     }
     else if (param.idx < 0){
         // 전체 삭제(TRUNCATE TABLE)
-        let result = DeleteAllHistory();
+        let result = await DeleteAllHistory();
         if(!result) res.status(500).send("Failed to reset table");
         else res.send(result);
     }

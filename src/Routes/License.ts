@@ -9,8 +9,9 @@ const router = Router();
 /**
  * 라이센스 및 등록된 기기 조회
  */
-router.get('/',async (req : Request, res : Response) : Promise<void> => {
-    let result = GetLicense();
+router.get('/', async (req : Request, res : Response) : Promise<void> => {
+    let result = await GetLicense();
+    console.log(`get license : ${result}`);
     if(result == null) res.status(500);
     else res.json(result);
 });
@@ -18,8 +19,8 @@ router.get('/',async (req : Request, res : Response) : Promise<void> => {
 /**
  * 라이센스 발급
  */
-router.post("/", (req, res) => {
-    let newLicense = CreateLicense();
+router.post("/", async (req, res) => {
+    let newLicense = await CreateLicense();
     if(newLicense == null) res.status(500).send("Failed to create license");
     else {
         let json = { license : "" };
@@ -31,13 +32,12 @@ router.post("/", (req, res) => {
 /**
  * 라이센스 삭제
  */
-router.delete("/", (req,res) => {
-    console.log("called license delete");
+router.delete("/", async (req,res) => {
     let param = req.body;
     if (param.license === undefined || param.license === null) {
         res.status(400).send("No license");
     }
-    let result = DeleteLicense(param.license);
+    let result = await DeleteLicense(param.license);
 
     if(!result) res.status(500).send("Failed to delete license");
     else res.send(result);
@@ -46,7 +46,7 @@ router.delete("/", (req,res) => {
 /**
  * 클라이언트로부터 라이센스 & 기기 등록
 */
-router.post("/regist", (req,res) => {
+router.post("/regist", async (req,res) => {
     let param = req.body;
     if (param.license === undefined || param.license === null) {
         res.status(400).send("No license");
@@ -54,10 +54,10 @@ router.post("/regist", (req,res) => {
     if(param.mac === undefined ||param.mac === null) {
         res.status(400).send("No mac address");
     }
-    let result = RegistDevice(param.mac);
+    let result = await RegistDevice(param.mac);
     if(!result) res.status(500).send("Failed to regist device");
     
-    result = SetLicense(param.mac, param.license);
+    result = await SetLicense(param.mac, param.license);
     if(!result) res.status(500).send("Failed to set license");
     else res.send(result);
     
@@ -66,7 +66,7 @@ router.post("/regist", (req,res) => {
 /**
  * 라이센스 유효성 확인
 */
-router.post("/check", (req,res) => {
+router.post("/check", async (req,res) => {
 
     try {
         let param = req.body;
@@ -76,8 +76,9 @@ router.post("/check", (req,res) => {
         if(param.mac === undefined ||param.mac === null) {
             res.status(400).send("No mac address");
         }
-        let result = CheckLicense(param.device, param.mac);
-        res.json({result : result});
+        let result = await CheckLicense(param.license, param.mac);
+        console.log(`chk result : ${result}`);
+        res.json({"result" : result});
     } catch (error) {
         res.status(500).send("Failed to check license");
     }

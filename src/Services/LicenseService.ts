@@ -2,10 +2,10 @@ import { RowDataPacket } from 'mysql2';
 import { DB_CLIENT } from '../DBConnector.js';
 import { v4 as uuidv4 } from 'uuid';
 
-export const ResetLicense = (device : string) => {
+export const ResetLicense = async (device : string) => {
     let res : boolean = false;
     try{
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`UPDATE License SET Device = NULL WHERE Device = '${device}'`)
         .then((result) => {
             res = true;
@@ -21,10 +21,10 @@ export const ResetLicense = (device : string) => {
     }
 };
 
-export const GetLicense = () => {
+export const GetLicense = async () => {
     let res : RowDataPacket[] | null = null;
     try {
-        DB_CLIENT.GetInstance().AsyncQuery("select * from License")
+        await DB_CLIENT.GetInstance().AsyncQuery("select * from License")
         .then((result) => {
             res = result;
         })
@@ -38,11 +38,11 @@ export const GetLicense = () => {
     }
 };
 
-export const CreateLicense = () => {
+export const CreateLicense = async () => {
     let res : string | null = null;
     try {
         let licenseNum : string = uuidv4();
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`INSERT INTO License (License) VALUES ('${licenseNum}')`)
         .then((result) => {
             res = licenseNum;
@@ -57,10 +57,10 @@ export const CreateLicense = () => {
     }
 };
 
-export const DeleteLicense = (license : string) => {
+export const DeleteLicense = async (license : string) => {
     let res : boolean = false;
     try{
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`DELETE FROM License WHERE License = '${license}'`)
         .then((result) => {
             res = true;
@@ -76,10 +76,10 @@ export const DeleteLicense = (license : string) => {
     }
 };
 
-export const SetLicense = (device : string, license : string) => {
+export const SetLicense = async (device : string, license : string) => {
     let res : boolean = false;
     try{
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`UPDATE License SET Device = '${device}' WHERE License = '${license}'`)
         .then((result) => {
             res = true;
@@ -95,12 +95,13 @@ export const SetLicense = (device : string, license : string) => {
     }
 };
 
-export const CheckLicense = (license : string, device : string) => {
+export const CheckLicense = async (license : string, device : string) => {
     let res : boolean = false;
     try{
-        DB_CLIENT.GetInstance()
+        await DB_CLIENT.GetInstance()
         .AsyncQuery(`SELECT COUNT(*) as CNT FROM License WHERE License = '${license}' AND Device = '${device}'`)
         .then((result) => {
+            console.log(`result : ${result}`);
             if(result != null) {
                 let cnt = result[0].CNT;
                 switch (cnt) {

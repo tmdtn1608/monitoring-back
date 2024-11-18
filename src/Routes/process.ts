@@ -3,12 +3,12 @@ import { CheckProcessType, StringBuilder } from '../Util.js';
 import { DB_CLIENT } from '../DBConnector.js';
 import { SetBlackWhiteList } from '../index.js';
 import { logBlackAdded, logWhiteAdded } from '../Services/LogService.js';
-import { GetProcessList, RegistProcess } from '../Services/ProcessService.js';
+import { DeleteProcess, EditProcess, GetProcessList, RegistProcess } from '../Services/ProcessService.js';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-    let result = GetProcessList();
+router.get('/', async (req, res) => {
+    let result = await GetProcessList();
     if(result == null) res.status(500);
     else res.json(result);
 });
@@ -41,7 +41,7 @@ router.get('/:type',(req , res) => {
 /**
  * 블랙/화이트리스트 프로세스 등록
  */
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
     let param = req.body;
     console.log(JSON.stringify(param));
     // processName
@@ -65,12 +65,12 @@ router.post("/", (req, res) => {
         res.status(400).send("Memo required");
     }
 
-    let result = RegistProcess(param);
+    let result = await RegistProcess(param);
     if(!result) res.status(500).json({result : false});
     else {
-        SetBlackWhiteList();
-        if (param.isBlack === 1) logBlackAdded(param.device);
-        else if (param.isBlack === 0) logWhiteAdded(param.device);
+        await SetBlackWhiteList();
+        if (param.isBlack === 1) await logBlackAdded(param.device);
+        else if (param.isBlack === 0) await logWhiteAdded(param.device);
         res.send(result);
     }
 });
@@ -79,7 +79,7 @@ router.post("/", (req, res) => {
 /**
  * 블랙/화이트리스트 프로세스 삭제
  */
-router.delete("/", (req,res) => {
+router.delete("/", async (req,res) => {
     let param = req.body;
     if(param.ProcessName === undefined || param.ProcessName == null){
         res.status(400).send("ProcessName required");
@@ -87,80 +87,23 @@ router.delete("/", (req,res) => {
     // ProcessName
     let processName = param.ProcessName;
 
-    DB_CLIENT.GetInstance()
-    .AsyncQuery(`DELETE FROM ProcessList WHERE ProcessName ='${processName}'`)
-    .then((result) => {
-        // TODO : 삭제하려는 프로세스 Black/White 판별 플래그 조회
-        // TODO : 삭제로그 추가
-        res.json({result : true });
-    })
-    .catch((error) => {
-        console.error('Error fetching process list:', error);
-        res.status(500).json({result : false});
-    });
+    let result = await DeleteProcess(processName);
+    if(!result) res.status(500).send("Failed to delete process");
+    res.send({result : result});
+
 });
 
 /**
  * 블랙/화이트리스트 프로세스 수정
  */
-router.put("/", (req,res) => {
+router.put("/", async (req,res) => {
     let param = req.body;
-    console.log(JSON.stringify(param));
     if(param.processName === undefined || param.processName == null){
         res.status(400).send("ProcessName required");
     }
-    // ProcessName
-    let processName = param.processName;
-    // Device
-    let Device = param.device === undefined ? null : param.device;
-    // IsBlack
-    let IsBlack = param.IsBlack === undefined ? null : param.IsBlack;
-    // IsAuto
-    let IsAuto = param.IsAuto === undefined ? null : param.IsAuto;
-    // Memo
-    let Memo = param.Memo === undefined ? null : param.Memo;
-
-    if(IsBlack == null &&
-        IsAuto == null &&
-        Memo == null
-    ) {
-        res.status(400).send("Nothing changed");
-    }
-
-    let queryBuilder = new StringBuilder();
-    queryBuilder.append("UPDATE ProcessList SET ");
-    
-    let queryArr : string[] = [];
-    const separator: string = ", ";
-    if(IsBlack != null) {
-        queryArr.push(`Device = '${Device}'`);
-    }
-    if(IsBlack != null) {
-        queryArr.push(`IsBlack = ${IsBlack}`);
-    }
-    if(IsAuto != null) {
-        queryArr.push(`IsAuto = ${IsAuto}`);
-    }
-
-    if(Memo != null) {
-        queryArr.push(`Memo = '${Memo}'`);
-    }
-    let changedQuery = queryArr.join(separator);
-
-    queryBuilder.append(changedQuery);
-    queryBuilder.append(` WHERE ProcessName = '${processName}'`);
-
-    DB_CLIENT.GetInstance()
-    .AsyncQuery(queryBuilder.toString())
-    .then((result) => {
-        res.json({result : true });
-    })
-    .catch((error) => {
-        console.error('Error fetching process list:', error);
-        res.status(500).json({result : false});
-    });
-
-    // res.send(queryBuilder.toString());
+    let result = await EditProcess(param);
+    if(!result) res.status(500).json({result : false});
+    res.send({result : result});
 });
 
 export default router;

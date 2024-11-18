@@ -102,6 +102,6 @@ server.listen(port, () => {
     SetBlackWhiteList();
 });
 
-export const SetBlackWhiteList = () => {
-    blackWhiteList = GetProcessList();
+export const SetBlackWhiteList = async () => {
+    blackWhiteList = await GetProcessList();
 }
