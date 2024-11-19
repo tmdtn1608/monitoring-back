@@ -1,6 +1,7 @@
 import { CONST } from "./Const.js";
 import mysql, { Pool, PoolConnection, RowDataPacket, FieldPacket } from "mysql2/promise";
-
+import dotenv from 'dotenv';
+dotenv.config({ path: '/home/ubuntu/monitoring-back/.env' });
 interface DbClient {
     Check: () => Promise<void>;
     Clear: () => Promise<void>;
@@ -19,11 +20,11 @@ const DB_CLIENT = (function () {
         return {
             Check: async function () {
                 const checkCon = await mysql.createConnection({
-                    host: CONST.DB_HOST,
-                    port: Number(CONST.DB_PORT),
-                    user: CONST.DB_USER,
-                    password: CONST.DB_PASS,
-                    database: CONST.DB_NAME,
+                    host: process.env.DB_HOST,
+                    port: Number(process.env.DB_PORT),
+                    user: process.env.DB_USER,
+                    password: process.env.DB_PASS,
+                    database: process.env.DB_NAME,
                 });
                 return checkCon.connect();
             },
