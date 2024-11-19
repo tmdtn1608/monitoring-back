@@ -77,12 +77,12 @@ const DB_CLIENT = (function () {
             if (!instance) {
                 instance = Instance();
                 connectionPool = mysql.createPool({
-                    connectionLimit: Number(CONST.DB_POOL),
-                    host: CONST.DB_HOST,
-                    port: Number(CONST.DB_PORT),
-                    user: CONST.DB_USER,
-                    password: CONST.DB_PASS,
-                    database: CONST.DB_NAME,
+                    connectionLimit: Number(process.env.DB_POOL),
+                    host: process.env.DB_HOST,
+                    port: Number(process.env.DB_PORT),
+                    user: process.env.DB_USER,
+                    password: process.env.DB_PASS,
+                    database: process.env.DB_NAME,
                 });
                 promisePool = connectionPool;
 
