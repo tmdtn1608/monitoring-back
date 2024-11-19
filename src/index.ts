@@ -41,6 +41,10 @@ type Dict = Record<string, WebSocket>;
 export const clients : Dict = {};
 DB_CLIENT.GetInstance().Check().then(() => {
     console.log("DB Connection OK");
+})
+.catch((error) =>{
+    console.error(error);
+    process.exit();
 });
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
