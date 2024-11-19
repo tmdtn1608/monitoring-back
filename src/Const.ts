@@ -1,17 +1,29 @@
 import dotenv from 'dotenv';
+dotenv.config();
 /**
  * 일반 상수 및 환경변수
  */
+/*
+CONST.API_PORT = Number(process.env.API_PORT);
+    // CONST.HTTPS_PORT = process.env.HTTPS_PORT as string;
+
+    CONST.DB_PORT = Number(process.env.DB_PORT);
+    CONST.DB_HOST = process.env.DB_HOST as string;
+    CONST.DB_USER = process.env.DB_USER as string;
+    CONST.DB_PASS = process.env.DB_PASS as string;
+    CONST.DB_NAME = process.env.DB_NAME as string;
+    CONST.DB_POOL = Number(process.env.DB_POOL);
+*/
 const CONST = {
     ENV_VERSION : '',
-    API_PORT : 0,
+    API_PORT : Number(process.env.API_PORT),
     HTTPS_PORT : '',
-    DB_PORT : 3306,
-    DB_HOST : 'localhost',
-    DB_USER : 'root',
-    DB_PASS : '',
-    DB_NAME : 'Monitoring',
-    DB_POOL : 0,
+    DB_PORT : Number(process.env.DB_PORT),
+    DB_HOST : process.env.DB_HOST,
+    DB_USER : process.env.DB_USER,
+    DB_PASS : process.env.DB_PASS,
+    DB_NAME : process.env.DB_NAME,
+    DB_POOL : Number(process.env.DB_POOL),
     JWT_KEY : '',
     JWT_ALG : '',
     JWT_EXP_A : '',
@@ -87,8 +99,7 @@ const IsValidationType = (param : any) => {
 }
 
 function ConstInit() {
-    dotenv.config();
-    console.log(`chk get process env : ${CONST.DB_NAME}`);
+    console.log(`chk get process env : ${process.env.API_PORT}`);
     CONST.API_PORT = Number(process.env.API_PORT);
     // CONST.HTTPS_PORT = process.env.HTTPS_PORT as string;
 
