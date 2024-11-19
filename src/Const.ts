@@ -88,6 +88,7 @@ const IsValidationType = (param : any) => {
 
 function ConstInit() {
     dotenv.config();
+    console.log(`chk get process env : ${CONST.DB_NAME}`);
     CONST.API_PORT = Number(process.env.API_PORT);
     // CONST.HTTPS_PORT = process.env.HTTPS_PORT as string;
 

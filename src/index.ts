@@ -15,6 +15,7 @@ import { ConstInit } from './Const.js';
 import { logProcKill } from './Services/LogService.js';
 import { GetProcessList } from './Services/ProcessService.js';
 
+ConstInit();
 const app = express();
 app.use(express.json());
 const port : number = Number(process.env.API_PORT) | 5000;
@@ -38,7 +39,6 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
 type Dict = Record<string, WebSocket>;
 export const clients : Dict = {};
-ConstInit();
 DB_CLIENT.GetInstance().Check().then(() => {
     console.log("DB Connection OK");
 });
