@@ -1,19 +1,8 @@
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ path: '/home/ubuntu/monitoring-back/.env' });
 /**
  * 일반 상수 및 환경변수
  */
-/*
-CONST.API_PORT = Number(process.env.API_PORT);
-    // CONST.HTTPS_PORT = process.env.HTTPS_PORT as string;
-
-    CONST.DB_PORT = Number(process.env.DB_PORT);
-    CONST.DB_HOST = process.env.DB_HOST as string;
-    CONST.DB_USER = process.env.DB_USER as string;
-    CONST.DB_PASS = process.env.DB_PASS as string;
-    CONST.DB_NAME = process.env.DB_NAME as string;
-    CONST.DB_POOL = Number(process.env.DB_POOL);
-*/
 const CONST = {
     ENV_VERSION : '',
     API_PORT : Number(process.env.API_PORT),
@@ -99,8 +88,8 @@ const IsValidationType = (param : any) => {
 }
 
 function ConstInit() {
-    console.log(`chk get process env : ${process.env.API_PORT}`);
-    console.log(`chk get process env : ${process.env.DB_NAME}`);
+    console.error(`@@chk get process env : ${process.env.API_PORT}`);
+    console.error(`@@chk get process env : ${process.env.DB_NAME}`);
     CONST.API_PORT = Number(process.env.API_PORT);
     // CONST.HTTPS_PORT = process.env.HTTPS_PORT as string;
 

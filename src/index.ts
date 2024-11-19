@@ -4,7 +4,7 @@ import { RowDataPacket } from 'mysql2';
 import http from 'http';
 import cors from 'cors';
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ path: '/home/ubuntu/monitoring-back/.env' });
 import licenseRouter from './Routes/License.js';
 import deviceRouter from './Routes/Device.js';
 import processRouter from './Routes/Process.js';
@@ -44,7 +44,7 @@ DB_CLIENT.GetInstance().Check().then(() => {
 })
 .catch((error) =>{
     console.error(error);
-    process.exit();
+    // process.exit();
 });
 
 wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
