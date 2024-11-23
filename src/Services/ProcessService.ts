@@ -24,7 +24,7 @@ export const RegistProcess = async (param : any) => {
     let res : boolean = false;
     try{
         let qb = new StringBuilder();
-        qb.append('INSERT INTO ProcessLIST (ProcessName, Device, IsBlack, IsAuto, MEMO) VALUES ')
+        qb.append('INSERT INTO ProcessList (ProcessName, Device, IsBlack, IsAuto, MEMO) VALUES ')
         .append(`('${param.processName}','${param.device}',${param.isBlack},${param.isAuto},'${param.memo}')`);
         await DB_CLIENT.GetInstance()
         .AsyncQuery(qb.toString())
