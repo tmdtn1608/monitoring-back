@@ -91,9 +91,9 @@ export const CheckProcessList = async (param : any) => {
     if (blackWhiteList != null) {
         blackWhiteList.forEach(item => {
             // item.ProcessName
-            console.log(`processes : ${JSON.stringify(item)}`);
+            // console.log(`processes : ${JSON.stringify(item)}`);
             if(item.Device == param.device) {
-                console.log(`chk process :${JSON.stringify(param)}`);
+                // console.log(`chk process :${JSON.stringify(param)}`);
                 Array.from(param.process.process, (k,v) => {
                     // k is unknown
                     if (typeof k === "object" && k != null) {
@@ -102,6 +102,7 @@ export const CheckProcessList = async (param : any) => {
                             && item.IsBlack === 1 && item.IsAuto === 1
                         ) {
                             console.log(`kill Process, devicce : ${param.device}, procName: ${item.ProcessName}`);
+                            let msg = {"device" : param.device, "process" : item.ProcessName};
                             clients[param.device].send(item.ProcessName);
                             logProcKillAuto(param.device);
                         } 

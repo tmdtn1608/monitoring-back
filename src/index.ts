@@ -60,6 +60,7 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
                 || clients[parsedMsg.from] === undefined){
                 clients[parsedMsg.from] = ws;
             }
+            // clients[parsedMsg.from] = ws;
         }
         // 웹에서 전송
         else {
@@ -106,13 +107,5 @@ server.listen(port, async() => {
 });
 
 export const SetBlackWhiteList = async () => {
-    // let result : RowDataPacket[] | null = null;
-    // GetAutoBlack()
-    // .then((res) => {
-    //     result = res;
-    // }).catch((err) => {
-    //     console.error(err)
-    //     return null;
-    // });
     blackWhiteList = await GetAutoBlack();
 }
