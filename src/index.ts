@@ -102,17 +102,17 @@ app.use("/log", processLogRouter);
 // 서버 시작
 server.listen(port, async() => {
     console.log(`Server is running on http://localhost:${port}`);
-    SetBlackWhiteList();
+    await SetBlackWhiteList();
 });
 
-export const SetBlackWhiteList = () => {
-    let result : RowDataPacket[] | null = null;
-    GetAutoBlack()
-    .then((res) => {
-        result = res;
-    }).catch((err) => {
-        console.error(err)
-        return null;
-    });
-    blackWhiteList = result;
+export const SetBlackWhiteList = async () => {
+    // let result : RowDataPacket[] | null = null;
+    // GetAutoBlack()
+    // .then((res) => {
+    //     result = res;
+    // }).catch((err) => {
+    //     console.error(err)
+    //     return null;
+    // });
+    blackWhiteList = await GetAutoBlack();
 }
