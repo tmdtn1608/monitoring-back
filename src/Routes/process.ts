@@ -67,7 +67,7 @@ router.post("/", async (req, res) => {
     let result = await RegistProcess(param);
     if(!result) res.status(500).json({result : false});
     else {
-        await SetBlackWhiteList();
+        SetBlackWhiteList();
         if (param.isBlack === 1) await logBlackAdded(param.device);
         else if (param.isBlack === 0) await logWhiteAdded(param.device);
         res.send(result);

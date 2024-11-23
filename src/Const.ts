@@ -88,8 +88,6 @@ const IsValidationType = (param : any) => {
 }
 
 function ConstInit() {
-    console.error(`@@chk get process env : ${process.env.API_PORT}`);
-    console.error(`@@chk get process env : ${process.env.DB_NAME}`);
     CONST.API_PORT = Number(process.env.API_PORT);
     // CONST.HTTPS_PORT = process.env.HTTPS_PORT as string;
 

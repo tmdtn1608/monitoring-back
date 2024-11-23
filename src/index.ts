@@ -56,8 +56,6 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
         console.log(`Receive success : ${parsedMsg.from}`);
         // 클라이언트에서 전송
         if(parsedMsg.from != "web") {
-            console.log(`clients[parsedMsg.from] : ${clients[parsedMsg.from]}`);
-            console.log(`ws : ${ws}`);
             if(clients[parsedMsg.from] === null 
                 || clients[parsedMsg.from] === undefined){
                 clients[parsedMsg.from] = ws;
