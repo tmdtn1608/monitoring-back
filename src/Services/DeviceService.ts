@@ -23,7 +23,7 @@ export const ResetDevice = async (device : string) => {
     let res : boolean = false;
     try {
         await DB_CLIENT.GetInstance()
-        .AsyncQuery(`UPDATE Device SET IsUsed = FALSE WHERE mac = '${device}'`)
+        .AsyncQuery(`DELETE FROM Device WHERE mac = '${device}'`)
         .then((result) => {
             res = true;
         })

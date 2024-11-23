@@ -95,13 +95,46 @@ export const SetLicense = async (device : string, license : string) => {
     }
 };
 
+export const CheckUsedLicense = async(license : string) => {
+    let res : boolean = false;
+    try{
+        await DB_CLIENT.GetInstance()
+        .AsyncQuery(`SELECT COUNT(*)  FROM License WHERE License = '${license}' AND (Device is null OR Device = '')`)
+        .then((result) => {
+            if(result != null) {
+                let cnt = result[0].CNT;
+                // 0이면 사용불가
+                // 1이면 사용가능
+                switch (cnt) {
+                    case 0:
+                        res = false;
+                        break;
+                    case 1:
+                        res = true;
+                        break;
+                    default:
+                        throw new Error("Duplicated");
+                }
+            }
+        })
+        .catch((error) => {
+            throw error;
+        });
+
+    } catch(error) {
+        console.error(error);
+        throw error;
+    } finally {
+        return res;
+    }
+};
+
 export const CheckLicense = async (license : string, device : string) => {
     let res : boolean = false;
     try{
         await DB_CLIENT.GetInstance()
         .AsyncQuery(`SELECT COUNT(*) as CNT FROM License WHERE License = '${license}' AND Device = '${device}'`)
         .then((result) => {
-            console.log(`result : ${result}`);
             if(result != null) {
                 let cnt = result[0].CNT;
                 switch (cnt) {

@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { CheckLicense, CreateLicense, DeleteLicense, GetLicense, SetLicense } from '../Services/LicenseService.js';
+import { CheckLicense, CheckUsedLicense, CreateLicense, DeleteLicense, GetLicense, SetLicense } from '../Services/LicenseService.js';
 import { RegistDevice } from '../Services/DeviceService.js';
 
 const router = Router();
@@ -73,8 +73,13 @@ router.post("/check", async (req,res) => {
         if(param.mac === undefined ||param.mac === null) {
             res.status(400).send("No mac address");
         }
-        let result = await CheckLicense(param.license, param.mac);
-        res.json({"result" : result});
+        let isAvailable = await CheckUsedLicense(param.license);
+        if(isAvailable) {
+            let result = await CheckLicense(param.license, param.mac);
+            res.json({"result" : result});
+        }
+        else throw new Error("Already used license");
+        
     } catch (error) {
         res.status(500).send("Failed to check license");
     }
