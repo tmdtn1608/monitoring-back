@@ -73,13 +73,13 @@ router.post("/check", async (req,res) => {
         if(param.mac === undefined ||param.mac === null) {
             res.status(400).send("No mac address");
         }
-        let isAvailable = await CheckUsedLicense(param.license);
-        if(isAvailable) {
-            let result = await CheckLicense(param.license, param.mac);
-            res.json({"result" : result});
-        }
-        else throw new Error("Already used license");
+        // let isAvailable = await CheckUsedLicense(param.license);
+        // if(isAvailable) {
+        // }
+        // else throw new Error("Already used license");
         
+        let result = await CheckLicense(param.license, param.mac);
+        res.json({"result" : result});
     } catch (error) {
         res.status(500).send("Failed to check license");
     }
