@@ -98,7 +98,7 @@ export const CheckProcessList = async (param : any) => {
                     if (typeof k === "object" && k != null) {
                         let processObject = k as processINF;
                         if (processObject.name === item.ProcessName 
-                            && item.IsBlack === 1
+                            && item.IsBlack === 1 && item.IsAuto === 1
                         ) {
                             clients[param.device].send(item.ProcessName);
                             logProcKillAuto(param.device);
