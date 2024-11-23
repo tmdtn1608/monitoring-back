@@ -90,8 +90,10 @@ export const CheckProcessList = async (param : any) => {
     if (blackWhiteList != null) {
         blackWhiteList.forEach(item => {
             // item.ProcessName
+            console.log(`processes : ${item}`);
             if(item.Device == param.device) {
-                Array.from(param.process.process,(k,v) => {
+                console.log(`chk process :${JSON.stringify(param.process)}`);
+                Array.from(param.process.process, (k,v) => {
                     // k is unknown
                     if (typeof k === "object" && k != null) {
                         let processObject = k as processINF;
