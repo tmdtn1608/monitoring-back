@@ -90,7 +90,7 @@ export const CheckProcessList = async (param : any) => {
     if (blackWhiteList != null) {
         blackWhiteList.forEach(item => {
             // item.ProcessName
-            console.log(`processes : ${item}`);
+            console.log(`processes : ${JSON.stringify(item)}`);
             if(item.Device == param.device) {
                 console.log(`chk process :${JSON.stringify(param.process)}`);
                 Array.from(param.process.process, (k,v) => {

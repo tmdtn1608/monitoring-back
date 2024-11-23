@@ -20,6 +20,24 @@ export const GetProcessList = async () => {
     }
 };
 
+export const GetAutoBlack = async () => {
+    let res : RowDataPacket[] | null = null;
+    try {
+        res = await DB_CLIENT.GetInstance()
+        .AsyncQuery("select * from ProcessList WHERE IsBlack = 1 AND IsAuto = 1")
+        .then((result) => {
+            return result;
+        })
+        .catch((error) => {
+            throw error;
+        });
+    } catch (error) {
+        console.error(error);
+    } finally {
+        return res;
+    }
+};
+
 export const RegistProcess = async (param : any) => {
     let res : boolean = false;
     try{

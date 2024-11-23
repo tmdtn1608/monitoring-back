@@ -13,7 +13,7 @@ import processLogRouter from './Routes/ProcessLog.js';
 import { DB_CLIENT } from "./DBConnector.js"
 import { ConstInit } from './Const.js';
 import { logProcKill } from './Services/LogService.js';
-import { GetProcessList } from './Services/ProcessService.js';
+import { GetAutoBlack, GetProcessList } from './Services/ProcessService.js';
 
 ConstInit();
 const app = express();
@@ -56,6 +56,8 @@ wss.on('connection', (ws: WebSocket, req: http.IncomingMessage) => {
         console.log(`Receive success : ${parsedMsg.from}`);
         // 클라이언트에서 전송
         if(parsedMsg.from != "web") {
+            console.log(`clients[parsedMsg.from] : ${clients[parsedMsg.from]}`);
+            console.log(`ws : ${ws}`);
             if(clients[parsedMsg.from] === null 
                 || clients[parsedMsg.from] === undefined){
                 clients[parsedMsg.from] = ws;
@@ -102,9 +104,17 @@ app.use("/log", processLogRouter);
 // 서버 시작
 server.listen(port, async() => {
     console.log(`Server is running on http://localhost:${port}`);
-    await SetBlackWhiteList();
+    SetBlackWhiteList();
 });
 
-export const SetBlackWhiteList = async () => {
-    blackWhiteList = await GetProcessList();
+export const SetBlackWhiteList = () => {
+    let result : RowDataPacket[] | null = null;
+    GetAutoBlack()
+    .then((res) => {
+        result = res;
+    }).catch((err) => {
+        console.error(err)
+        return null;
+    });
+    blackWhiteList = result;
 }
